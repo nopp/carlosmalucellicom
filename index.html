@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>carlosmalucell!com</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="/egg.js/egg.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			$(".content").hide();
+			$("#links").hide();
+			$("#links").fadeIn(1200);
+		});
+		var egg = new Egg("p,i,a", function() {
+			$("#links").fadeOut(1200, function() {
+				$(".content").fadeIn(1200,function() {
+					$(".content").delay(10000).fadeOut(1200,function() {
+						$("#links").fadeIn(1200);
+					});
+				});
+			});
+		}).listen();
+		</script>
+		<style>
+		.content {
+		  font-family: monospace;
+		  font-size: 50px;
+		  color: gray;
+		}
+		.content,#links {
+		  position: absolute;
+		  left: 50%;
+		  top: 50%;
+		  -webkit-transform: translate(-50%, -50%);
+		  transform: translate(-50%, -50%);
+		}
+		#links i {
+	      color: gray;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="content">
+			<span>olala!</span>
+		</div>
+		<div id="links">
+			<a href="https://www.instagram.com/carlosmalucelli/"><i class="fa fa-instagram fa-5x" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;
+			<a href="https://github.com/nopp/"><i class="fa fa-github fa-5x" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;
+			<a href="https://br.linkedin.com/in/carlosmalucelli"><i class="fa fa-linkedin-square fa-5x" aria-hidden="true"></i></a><br>
+		</div>
+	</body>
+</html>
+	
