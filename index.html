@@ -1,51 +1,533 @@
-<html>
-	<head>
-		<title>carlosmalucell!com</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
-		<script type="text/javascript" src="/egg.js/egg.js"></script>
-		<script type="text/javascript">
-		$(document).ready(function() {
-			$(".content").hide();
-			$("#links").hide();
-			$("#links").fadeIn(1200);
-		});
-		var egg = new Egg("p,i,a", function() {
-			$("#links").fadeOut(1200, function() {
-				$(".content").fadeIn(1200,function() {
-					$(".content").delay(10000).fadeOut(1200,function() {
-						$("#links").fadeIn(1200);
-					});
-				});
-			});
-		}).listen();
-		</script>
-		<style>
-		.content {
-		  font-family: monospace;
-		  font-size: 50px;
-		  color: gray;
-		}
-		.content,#links {
-		  position: absolute;
-		  left: 50%;
-		  top: 50%;
-		  -webkit-transform: translate(-50%, -50%);
-		  transform: translate(-50%, -50%);
-		}
-		#links i {
-	      color: gray;
-		}
-		</style>
-	</head>
-	<body>
-		<div class="content">
-			<span>olala!</span>
-		</div>
-		<div id="links">
-			<a href="https://github.com/nopp/"><i class="fa fa-github fa-5x" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;
-			<a href="https://br.linkedin.com/in/carlosmalucelli"><i class="fa fa-linkedin-square fa-5x" aria-hidden="true"></i></a><br>
-		</div>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>carlosmalucelli@terminal:~</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --bg:        #24292E;
+        --bg-panel:  #1F2428;
+        --bg-header: #1B1F23;
+        --border:    #30363D;
+        --text:      #E1E4E8;
+        --dim:       #6A737D;
+        --accent:    #79B8FF;
+        --func:      #B392F0;
+        --kw:        #F97583;
+        --str:       #9ECBFF;
+        --orange:    #F9826C;
+        --font: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      }
+
+      html, body {
+        height: 100%;
+        width: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        overflow: hidden;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      /* ── TERMINAL ─────────────────────────────── */
+      .terminal-panel {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+        border-right: 1px solid var(--border);
+        overflow: hidden;
+        min-width: 0;
+      }
+
+      .titlebar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: var(--bg-header);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .dot { width: 12px; height: 12px; border-radius: 50%; }
+      .dot-r { background: #ff5f56; }
+      .dot-y { background: #ffbd2e; }
+      .dot-g { background: #27c93f; }
+
+      .bar-title {
+        font-size: 11px;
+        color: var(--dim);
+        margin-left: 6px;
+        letter-spacing: 0.5px;
+      }
+
+      .terminal-output {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 16px 18px;
+        font-size: 13px;
+        line-height: 1.65;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .terminal-output::-webkit-scrollbar { width: 4px; }
+      .terminal-output::-webkit-scrollbar-thumb { background: var(--border); }
+
+      .ln      { color: var(--text); margin: 1px 0; white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word; }
+      .ln-dim  { color: var(--dim); }
+      .ln-info { color: #8B949E; }
+      .ln-cmd  { color: var(--func); }
+      .ln-err  { color: var(--kw); }
+      .ln-sep  { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+      .terminal-input-row {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        border-top: 1px solid var(--border);
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .prompt-label {
+        color: var(--accent);
+        font-size: 13px;
+        white-space: nowrap;
+        user-select: none;
+        flex-shrink: 0;
+      }
+
+      .terminal-input {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 13px;
+        caret-color: var(--orange);
+      }
+
+      /* ── CONTENT PANEL ────────────────────────── */
+      .content-panel {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-panel);
+        overflow: hidden;
+        min-width: 0;
+        position: relative;
+      }
+
+      .content-titlebar {
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        background: var(--bg-header);
+        border-bottom: 1px solid var(--border);
+        height: 37px;
+        flex-shrink: 0;
+        gap: 4px;
+      }
+
+      .tab {
+        font-size: 12px;
+        color: var(--dim);
+        padding: 2px 12px;
+        border-radius: 2px;
+      }
+
+      .tab.active {
+        color: var(--text);
+        background: rgba(121, 184, 255, 0.08);
+        border: 1px solid var(--border);
+      }
+
+      .content-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 48px 52px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .content-body::-webkit-scrollbar { width: 4px; }
+      .content-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+      /* ── MATRIX ──────────────────────────────── */
+      #view-matrix {
+        position: absolute;
+        top: 37px;
+        left: 0; right: 0; bottom: 0;
+        z-index: 10;
+        background: #000;
+        display: none;
+      }
+      #view-matrix canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .matrix-msg {
+        position: absolute;
+        bottom: 24px;
+        left: 0; right: 0;
+        text-align: center;
+        font-size: 12px;
+        color: rgba(0,255,65,0.4);
+        font-family: var(--font);
+        pointer-events: none;
+      }
+
+      /* ── VIEWS ────────────────────────────────── */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .view { animation: fadeUp 0.18s ease; }
+
+      /* welcome */
+      .welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 18px;
+        opacity: 0.5;
+        user-select: none;
+        text-align: center;
+      }
+
+      .welcome-code {
+        font-size: 13px;
+        line-height: 1.8;
+        text-align: left;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 16px 20px;
+      }
+      .kw  { color: var(--kw); }
+      .var { color: var(--accent); }
+      .str { color: var(--str); }
+      .key { color: var(--text); }
+
+      .avatar {
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center top;
+        border: 2px solid var(--border);
+        box-shadow: 0 0 0 4px rgba(121, 184, 255, 0.08);
+        display: block;
+      }
+
+      .welcome-name {
+        font-size: 15px;
+        color: var(--text);
+        letter-spacing: 0.5px;
+      }
+
+      .welcome-hint { font-size: 12px; color: #8B949E; }
+      .welcome-hint span { color: var(--str); }
+
+      /* about */
+      .about-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        margin-bottom: 36px;
+      }
+      .about-header-text { flex: 1; }
+      .about h1 { font-size: 22px; color: var(--text); margin-bottom: 4px; }
+      .about .sub { font-size: 13px; color: var(--dim); margin-bottom: 0; }
+      .about-avatar {
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center top;
+        border: 2px solid var(--border);
+        box-shadow: 0 0 0 4px rgba(121, 184, 255, 0.08);
+        flex-shrink: 0;
+      }
+      .about section { margin-bottom: 30px; }
+
+      .section-label {
+        font-size: 10px;
+        color: var(--dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+        margin-bottom: 14px;
+      }
+
+      .about p { font-size: 14px; color: var(--text); line-height: 1.85; }
+
+      .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+      .tag {
+        font-size: 12px;
+        color: var(--accent);
+        border: 1px solid var(--border);
+        padding: 3px 10px;
+        border-radius: 2px;
+        background: rgba(121, 184, 255, 0.07);
+      }
+
+      .links { display: flex; gap: 16px; flex-wrap: wrap; }
+      .links a {
+        font-size: 13px;
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        padding-bottom: 2px;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .links a:hover { color: var(--str); border-color: var(--str); }
+
+      /* portfolio */
+      .portfolio h1 { font-size: 22px; color: var(--text); margin-bottom: 4px; }
+      .portfolio .sub { font-size: 13px; color: var(--dim); margin-bottom: 24px; }
+
+      .gh-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 13px;
+        color: var(--text);
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 14px;
+        text-decoration: none;
+        margin-bottom: 28px;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .gh-link:hover { background: rgba(255,255,255,0.09); border-color: #8B949E; }
+      .gh-link svg { flex-shrink: 0; }
+
+      .project-grid { display: flex; flex-direction: column; gap: 14px; }
+
+      .card {
+        background: rgba(121, 184, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px 24px;
+        transition: border-color 0.15s;
+      }
+      .card:hover { border-color: var(--accent); }
+
+      .card-name {
+        font-size: 15px;
+        color: var(--accent);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .card-name a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.15s;
+      }
+      .card-name a:hover { border-color: var(--accent); }
+      .card-name .ext { font-size: 11px; color: var(--dim); }
+
+      .card-desc { font-size: 13px; color: var(--text); line-height: 1.65; margin-bottom: 12px; }
+
+      /* help */
+      .help-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .help-table tr { border-bottom: 1px solid var(--border); }
+      .help-table td { padding: 10px 14px; vertical-align: top; }
+      .help-table td:first-child { color: var(--accent); width: 130px; white-space: nowrap; }
+      .help-table td:last-child { color: var(--text); }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+
+      <!-- TERMINAL -->
+      <div class="terminal-panel">
+        <div class="titlebar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <span class="bar-title">carlosmalucelli@terminal — bash</span>
+        </div>
+        <div class="terminal-output" id="output"></div>
+        <div class="terminal-input-row">
+          <span class="prompt-label">nopp@pia-server:~$</span>
+          <input
+            class="terminal-input"
+            id="input"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            autofocus
+          />
+        </div>
+      </div>
+
+      <!-- CONTENT PANEL -->
+      <div class="content-panel">
+        <div class="content-titlebar">
+          <span class="tab active" id="tab-label">~</span>
+        </div>
+        <div class="content-body" id="content-body">
+
+          <!-- MATRIX -->
+          <div id="view-matrix">
+            <canvas id="matrix-canvas"></canvas>
+            <div class="matrix-msg">type any command to exit</div>
+          </div>
+
+          <!-- WELCOME -->
+          <div class="welcome view" id="view-welcome">
+            <img class="avatar" src="assets/avatar.jpg" alt="carlosmalucelli" />
+            <span class="welcome-name">carlosmalucelli</span>
+            <span class="welcome-hint">type <span>help</span> to get started</span>
+          </div>
+
+          <!-- ABOUT -->
+          <div class="about view" id="view-about" style="display:none">
+            <div class="about-header">
+              <div class="about-header-text">
+                <h1>Carlos Malucelli</h1>
+                <p class="sub">// SRE · DevOps · Platform Staff</p>
+              </div>
+              <img class="about-avatar" src="assets/avatar.jpg" alt="carlosmalucelli" />
+            </div>
+
+            <section>
+              <p class="section-label">whoami</p>
+              <p>I've spent 15+ years working deep in Linux environments — from system internals to large-scale infrastructure. Along the way, I've worn many hats: SRE, DevOps Engineer, and now Platform Staff, where I focus on building the platforms and foundations that engineering teams rely on.</p>
+              <br />
+              <p>I hold a degree in Computer Science and a postgraduate in Computer Networks, and I'm passionate about automation, reliability, and crafting tools that make complex systems simpler — mostly in Python and Go.</p>
+              <br />
+              <p>Outside of work, I build and fly RC aircraft and tinker with 3D printing — hobbies that keep me equally focused on precision, iteration, and making things work in the real world.</p>
+            </section>
+
+            <section>
+              <p class="section-label">skills</p>
+              <div class="tags">
+                <span class="tag">Linux</span>
+                <span class="tag">Python</span>
+                <span class="tag">Go</span>
+                <span class="tag">SRE</span>
+                <span class="tag">DevOps</span>
+                <span class="tag">Platform Engineering</span>
+                <span class="tag">Infrastructure</span>
+                <span class="tag">Automation</span>
+                <span class="tag">Reliability</span>
+                <span class="tag">Computer Networks</span>
+              </div>
+            </section>
+
+            <section>
+              <p class="section-label">contact</p>
+              <div class="links">
+                <a href="https://github.com/nopp" target="_blank" rel="noopener">github</a>
+                <a href="https://br.linkedin.com/in/carlosmalucelli" target="_blank" rel="noopener">linkedin</a>
+              </div>
+            </section>
+          </div>
+
+          <!-- PORTFOLIO -->
+          <div class="portfolio view" id="view-portfolio" style="display:none">
+            <h1>Portfolio</h1>
+            <p class="sub">// projects and work</p>
+
+            <a class="gh-link" href="https://github.com/nopp" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+              github.com/nopp
+            </a>
+
+            <div class="project-grid">
+              <div class="card">
+                <div class="card-name">
+                  <a href="#">terminal-site</a>
+                  <span class="ext">↗ live</span>
+                </div>
+                <p class="card-desc">
+                  Site pessoal com interface de terminal. Navegação por comandos,
+                  painel dinâmico, tema GitHub Dark.
+                </p>
+                <div class="tags">
+                  <span class="tag">Astro</span>
+                  <span class="tag">CSS</span>
+                  <span class="tag">JS</span>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-name">
+                  <a href="#">projeto-2</a>
+                </div>
+                <p class="card-desc">
+                  Descrição do segundo projeto. Substitua com seus projetos reais.
+                </p>
+                <div class="tags">
+                  <span class="tag">TypeScript</span>
+                  <span class="tag">React</span>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-name">
+                  <a href="#">projeto-3</a>
+                </div>
+                <p class="card-desc">
+                  Mais um projeto incrível. Edite o index.astro para colocar
+                  seus trabalhos reais aqui.
+                </p>
+                <div class="tags">
+                  <span class="tag">Go</span>
+                  <span class="tag">Linux</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HELP -->
+          <div class="view" id="view-help" style="display:none">
+            <table class="help-table">
+              <tbody>
+                <tr><td>whoami</td><td>about me</td></tr>
+                <tr><td>portfolio</td><td>projects and work</td></tr>
+                <tr><td>uname -a</td><td>system information</td></tr>
+                <tr><td>help</td><td>show this help</td></tr>
+                <tr><td>clear</td><td>clear the terminal</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/script.js"></script>
+  </body>
 </html>
-	
