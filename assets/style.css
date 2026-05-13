@@ -16,12 +16,12 @@
 }
 
 html, body {
-  min-height: 100%;
+  min-height: 100vh;
   width: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .layout {
@@ -377,3 +377,90 @@ html, body {
 .help-table td { padding: 10px 14px; vertical-align: top; }
 .help-table td:first-child { color: var(--accent); width: 130px; white-space: nowrap; }
 .help-table td:last-child { color: var(--text); }
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+
+  .terminal-panel,
+  .content-panel {
+    border-radius: 0;
+  }
+
+  .terminal-panel {
+    border-right: none;
+  }
+
+  .content-panel {
+    border-top: 1px solid var(--border);
+  }
+
+  .content-body {
+    padding: 24px 18px 32px;
+  }
+
+  .about-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-avatar,
+  .avatar {
+    width: 130px;
+    height: 130px;
+  }
+
+  .welcome {
+    gap: 14px;
+  }
+
+  .titlebar,
+  .content-titlebar {
+    padding: 0 12px;
+    height: 40px;
+  }
+
+  .terminal-output,
+  .terminal-input-row {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .terminal-input-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .prompt-label {
+    font-size: 12px;
+  }
+
+  .terminal-input {
+    font-size: 14px;
+  }
+
+  .about h1,
+  .portfolio h1 {
+    font-size: 20px;
+  }
+
+  .about p,
+  .card-desc,
+  .links a,
+  .help-table td {
+    font-size: 14px;
+  }
+
+  .help-table td:first-child {
+    width: auto;
+    white-space: normal;
+  }
+}
