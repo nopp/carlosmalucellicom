@@ -184,7 +184,7 @@
     switch (cmd) {
       case 'uname':
       case 'uname -a':
-        print('Linux pia-server 6.8.0-1053-gcp #56~22.04.1-Ubuntu SMP Mon Mar 23 20:16:54 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux', 'ln');
+        print('Linux pia-server 6.8.0-slackware SMP Mon Mar 23 20:16:54 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux', 'ln');
         break;
       case 'pia':
         print('// wake up, neo...', 'ln ln-dim');
