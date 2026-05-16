@@ -4,129 +4,121 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <title>carlosmalucell!com</title>
+    <title>carlosmalucelli@terminal:~</title>
     <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
     <div class="layout">
+      <div class="window-controls" aria-hidden="true">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+      </div>
+      <div class="title-indicator">
+        <span class="tab active" id="tab-label">~</span>
+        <button id="home-btn" class="home-btn" aria-label="Home">home</button>
+      </div>
+      <div class="terminal-top-row"></div>
+      <div class="screen">
+        <div class="logo-bg">
+          <img src="assets/avatar.jpg" alt="logo" />
+        </div>
 
-      <!-- TERMINAL -->
-      <div class="terminal-panel">
-        <div class="titlebar">
-          <span class="dot dot-r"></span>
-          <span class="dot dot-y"></span>
-          <span class="dot dot-g"></span>
-          <span class="bar-title">carlosmalucelli@terminal — bash</span>
+        <!-- MATRIX -->
+        <div id="view-matrix">
+          <canvas id="matrix-canvas"></canvas>
         </div>
+
+        <!-- VIEWS -->
+        <div class="welcome view" id="view-welcome">
+          <span class="welcome-hint">type <span>help</span> to get started</span>
+        </div>
+
+        <div class="about view" id="view-about" style="display:none">
+          <div class="about-header">
+            <div class="about-header-text">
+              <h1>Carlos Malucelli (Piá/nopp)</h1>
+              <p class="sub">// SRE · DevOps · Platform Staff</p>
+            </div>
+            <img class="about-avatar" src="assets/avatar.jpg" alt="carlosmalucelli" />
+          </div>
+
+          <section>
+            <p class="section-label">whoami</p>
+            <p>I've spent 15+ years working deep in Linux environments — from system internals to large-scale infrastructure. Along the way, I've worn many hats: SRE, DevOps Engineer, and now Platform Staff, where I focus on building the platforms and foundations that engineering teams rely on.</p>
+            <br />
+            <p>I hold a degree in Computer Science and a postgraduate in Computer Networks, and I'm passionate about automation, reliability, and crafting tools that make complex systems simpler — mostly in Python and Go.</p>
+            <br />
+            <p>Outside of work, I build and fly RC aircraft and tinker with 3D printing — hobbies that keep me equally focused on precision, iteration, and making things work in the real world.</p>
+          </section>
+
+          <section>
+            <p class="section-label">skills</p>
+            <div class="tags">
+              <span class="tag">Linux</span>
+              <span class="tag">Python</span>
+              <span class="tag">Go</span>
+              <span class="tag">SRE</span>
+              <span class="tag">DevOps</span>
+              <span class="tag">Platform Engineering</span>
+              <span class="tag">Infrastructure</span>
+              <span class="tag">Automation</span>
+              <span class="tag">Reliability</span>
+              <span class="tag">Computer Networks</span>
+              <span class="tag">GCP</span>
+              <span class="tag">AWS</span>
+            </div>
+          </section>
+
+          <section>
+            <p class="section-label">contact</p>
+            <div class="links">
+              <a href="https://github.com/nopp" target="_blank" rel="noopener">github</a>
+              <a href="https://br.linkedin.com/in/carlosmalucelli" target="_blank" rel="noopener">linkedin</a>
+            </div>
+          </section>
+        </div>
+
+        <div class="portfolio view" id="view-portfolio" style="display:none">
+          <h1>Portfolio</h1>
+          <p class="sub">// projects and work</p>
+
+          <a class="gh-link" href="https://github.com/nopp" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            github.com/nopp
+          </a>
+        </div>
+
+        <div class="view" id="view-help" style="display:none">
+          <table class="help-table">
+            <tbody>
+              <tr><td>whoami</td><td>about me</td></tr>
+              <tr><td>portfolio</td><td>projects and work</td></tr>
+              <tr><td>uname -a</td><td>system information</td></tr>
+              <!-- sl command removed -->
+              <tr><td>help</td><td>show this help</td></tr>
+              <tr><td>clear</td><td>clear the terminal</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="terminal-output" id="output"></div>
-        <div class="terminal-input-row">
-          <span class="prompt-label">nopp@pia-server:~$</span>
-          <input
-            class="terminal-input"
-            id="input"
-            type="text"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-            autofocus
-          />
-        </div>
       </div>
 
-      <!-- CONTENT PANEL -->
-      <div class="content-panel">
-        <div class="content-titlebar">
-          <span class="tab active" id="tab-label">~</span>
-        </div>
-        <div class="content-body" id="content-body">
-
-          <!-- MATRIX -->
-          <div id="view-matrix">
-            <canvas id="matrix-canvas"></canvas>
-          </div>
-
-          <!-- WELCOME -->
-          <div class="welcome view" id="view-welcome">
-            <img class="avatar" src="assets/avatar.jpg" alt="carlosmalucelli" />
-            <span class="welcome-hint">type <span>help</span> to get started</span>
-          </div>
-
-          <!-- ABOUT -->
-          <div class="about view" id="view-about" style="display:none">
-            <div class="about-header">
-              <div class="about-header-text">
-                <h1>Carlos Malucelli (Piá/nopp)</h1>
-                <p class="sub">// SRE · DevOps · Platform Staff</p>
-              </div>
-              <img class="about-avatar" src="assets/avatar.jpg" alt="carlosmalucelli" />
-            </div>
-
-            <section>
-              <p class="section-label">whoami</p>
-              <p>I've spent 15+ years working deep in Linux environments — from system internals to large-scale infrastructure. Along the way, I've worn many hats: SRE, DevOps Engineer, and now Platform Staff, where I focus on building the platforms and foundations that engineering teams rely on.</p>
-              <br />
-              <p>I hold a degree in Computer Science and a postgraduate in Computer Networks, and I'm passionate about automation, reliability, and crafting tools that make complex systems simpler — mostly in Python and Go.</p>
-              <br />
-              <p>Outside of work, I build and fly RC aircraft and tinker with 3D printing — hobbies that keep me equally focused on precision, iteration, and making things work in the real world.</p>
-            </section>
-
-            <section>
-              <p class="section-label">skills</p>
-              <div class="tags">
-                <span class="tag">Linux</span>
-                <span class="tag">Python</span>
-                <span class="tag">Go</span>
-                <span class="tag">SRE</span>
-                <span class="tag">DevOps</span>
-                <span class="tag">Platform Engineering</span>
-                <span class="tag">Infrastructure</span>
-                <span class="tag">Automation</span>
-                <span class="tag">Reliability</span>
-                <span class="tag">Computer Networks</span>
-                <span class="tag">GCP</span>
-                <span class="tag">AWS</span>
-              </div>
-            </section>
-
-            <section>
-              <p class="section-label">contact</p>
-              <div class="links">
-                <a href="https://github.com/nopp" target="_blank" rel="noopener">github</a>
-                <a href="https://br.linkedin.com/in/carlosmalucelli" target="_blank" rel="noopener">linkedin</a>
-              </div>
-            </section>
-          </div>
-
-          <!-- PORTFOLIO -->
-          <div class="portfolio view" id="view-portfolio" style="display:none">
-            <h1>Portfolio</h1>
-            <p class="sub">// projects and work</p>
-
-            <a class="gh-link" href="https://github.com/nopp" target="_blank" rel="noopener">
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-              github.com/nopp
-            </a>
-
-            </a>
-          </div>
-
-          <!-- HELP -->
-          <div class="view" id="view-help" style="display:none">
-            <table class="help-table">
-              <tbody>
-                <tr><td>whoami</td><td>about me</td></tr>
-                <tr><td>portfolio</td><td>projects and work</td></tr>
-                <tr><td>uname -a</td><td>system information</td></tr>
-                <tr><td>help</td><td>show this help</td></tr>
-                <tr><td>clear</td><td>clear the terminal</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
+      <div class="terminal-input-row bottom">
+        <span class="prompt-label">nopp@pia-server:~$</span>
+        <input
+          class="terminal-input"
+          id="input"
+          type="text"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          autofocus
+        />
       </div>
     </div>
 
