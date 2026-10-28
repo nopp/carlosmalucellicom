@@ -27,7 +27,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 15px;
+  font-size: 12px;
   line-height: 1.55;
   padding: 28px 16px;
   color-scheme: dark;
@@ -54,11 +54,37 @@ body {
   position: relative;
 }
 
+.homelab-open {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--arrow);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.homelab-open:hover { background: rgba(255, 255, 255, 0.06); }
+
+.homelab-open:focus-visible {
+  outline: 1px solid var(--tilde);
+  outline-offset: 2px;
+}
+
 .wintitle {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  max-width: calc(100% - 140px);
+  max-width: calc(100% - 240px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -213,11 +239,72 @@ body {
   50%, 100% { opacity: 0; }
 }
 
+.homelab-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.homelab-modal[hidden] { display: none; }
+
+.homelab-card {
+  position: relative;
+  width: min(520px, 100%);
+  padding: 22px 22px 24px;
+  background: #101010;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.homelab-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #c8c8c8;
+  cursor: pointer;
+}
+
+.homelab-close:hover { background: rgba(255, 255, 255, 0.08); }
+
+.homelab-close:focus-visible {
+  outline: 1px solid var(--tilde);
+  outline-offset: 2px;
+}
+
+.homelab-title {
+  margin-bottom: 14px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.homelab-photo {
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+  border: 1px dashed #333;
+  border-radius: 8px;
+  background: #0a0a0a;
+  color: var(--muted);
+  text-align: center;
+}
+
 @media (max-width: 640px) {
   body {
     align-items: stretch;
     padding: 0;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .window {
@@ -227,9 +314,11 @@ body {
   }
 
   .wintitle {
-    max-width: calc(100% - 110px);
+    max-width: calc(100% - 210px);
     font-size: 12px;
   }
+
+  .homelab-photo { min-height: 220px; }
 
   .wm-btn { width: 24px; height: 24px; }
   .wm-btn svg { width: 13px; height: 13px; }
@@ -248,6 +337,7 @@ body {
     transform: none;
     max-width: none;
     flex: 1 1 auto;
+    min-width: 0;
     text-align: left;
   }
 }
